@@ -1,0 +1,54 @@
+# --- Unity generated folders (never commit) ---
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+Recordings/
+CrashReports/
+SysInfo/
+
+# --- Addressables/AssetBundles caches (keep data, ignore builds) ---
+[Aa]ssetBundles/
+# If you use Addressables, keep the data folder but ignore build cache:
+# [Aa]ddressable[Aa]ssets[Dd]ata/*/Android/
+# [Aa]ddressable[Aa]ssets[Dd]ata/*/iOS/
+# [Aa]ddressable[Aa]ssets[Dd]ata/*/Standalone*/*
+
+# --- IDE / Editor junk ---
+.vs/
+.vscode/
+.idea/
+*.sln
+*.csproj
+*.unityproj
+*.pidb
+*.user
+*.userprefs
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+
+# --- Platform build artifacts ---
+*.apk
+*.aab
+*.ipa
+*.xcuserstate
+*.xcworkspace
+*.xcodeproj/*
+*.keystore
+
+# --- Unity Collaborate / Asset Store cache ---
+Assets/AssetStoreTools*
