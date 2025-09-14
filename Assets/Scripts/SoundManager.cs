@@ -3,7 +3,6 @@ using static Weapon;
 
 public class SoundManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     public static SoundManager Instance { get; set; }
 
     public AudioSource ShootingChannel;
@@ -16,6 +15,9 @@ public class SoundManager : MonoBehaviour
     public AudioSource reloadingSoundM1911;
     public AudioSource reloadingSoundM4_8;
     public AudioSource emptyMagazineSoundM1911;
+
+    public AudioSource throwablesChannel;
+    public AudioClip grenadeSound;
 
     private void Awake()
     {

@@ -4,6 +4,8 @@ using System;                 // <-- for Action
 
 public class Weapon : MonoBehaviour
 {
+    public bool isActiveWeapon;
+    public int weaponDamage;
     // ---- HUD / Inventory metadata ----
     [Header("HUD / Inventory")]
     public string weaponName = "M16A4";
@@ -159,6 +161,10 @@ public class Weapon : MonoBehaviour
 
         // spawn bullet
         GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity);
+
+        Bullet bul = bullet.GetComponent<Bullet>();
+        bul.bulletDamage = weaponDamage;
+
         bullet.transform.forward = shootingDirection;
         bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward.normalized * bulletVelocity, ForceMode.Impulse);
         StartCoroutine(DestroyBulletAfterTime(bullet, bulletPrefabLifeTime));
@@ -196,7 +202,7 @@ public class Weapon : MonoBehaviour
         int need = magazineSize - bulletsLeft;
         int toLoad = Mathf.Min(need, totalAmmo);
         bulletsLeft += toLoad;
-        totalAmmo   -= toLoad;
+        totalAmmo -= toLoad;
 
         isReloading = false;
         NotifyAmmoChanged();
