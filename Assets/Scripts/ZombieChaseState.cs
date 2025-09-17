@@ -20,6 +20,11 @@ public class ZombieChasingState : StateMachineBehaviour
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (SoundManager.Instance.zombieChannel.isPlaying == false)
+        {
+            SoundManager.Instance.zombieChannel.PlayOneShot(SoundManager.Instance.zombieChase);
+        }
+
         agent.SetDestination(player.position);
         animator.transform.LookAt(player);
 
@@ -41,5 +46,6 @@ public class ZombieChasingState : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         agent.SetDestination(agent.transform.position);
+        SoundManager.Instance.zombieChannel.Stop();
     }
 }

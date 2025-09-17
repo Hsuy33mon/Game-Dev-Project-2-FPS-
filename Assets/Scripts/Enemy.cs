@@ -7,6 +7,8 @@ public class Enemy : MonoBehaviour
     private Animator animator;
     private NavMeshAgent navAgent;
 
+    public bool isDead;
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -28,10 +30,17 @@ public class Enemy : MonoBehaviour
             {
                 animator.SetTrigger("DIE2");
             }
+            isDead = true;
+
+            // Dead Sound
+            SoundManager.Instance.zombieChannel2.PlayOneShot(SoundManager.Instance.zombieDeath);
         }
         else
         {
             animator.SetTrigger("DAMAGE");
+
+            // Hurt Sound
+            SoundManager.Instance.zombieChannel2.PlayOneShot(SoundManager.Instance.zombieHurt);
         }
     }
 
