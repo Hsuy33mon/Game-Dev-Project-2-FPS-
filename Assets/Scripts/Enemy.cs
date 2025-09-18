@@ -44,7 +44,19 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void OawGizmos()
+    public void DestroyZombie()
+    {
+        // Disable the NavMeshAgent to prevent any movement
+        if (navAgent != null)
+        {
+            navAgent.enabled = false;
+        }
+
+        // Destroy the zombie GameObject
+        Destroy(gameObject);
+    }
+
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, 2.5f); // Attacking // Stop Attacking

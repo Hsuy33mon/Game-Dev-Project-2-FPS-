@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ZombieSpawnController : MonoBehaviour
 {
-    public int initialZombiesPerWave = 5;
+    public int initialZombiesPerWave = 2;
     public int currentZombiesPerWave;
 
     public float spawnDelay = 0.5f; // Delay between spawning each zombie spawn in a wave
@@ -17,6 +17,7 @@ public class ZombieSpawnController : MonoBehaviour
 
     public bool inCooldown;
     public float cooldownCounter = 0; // For testing and UI
+    public bool gameCompleted = false; // Track if all waves are completed
 
     public List<Enemy> currentZombiesAlive;
     public GameObject zombiePrefab;
@@ -27,8 +28,7 @@ public class ZombieSpawnController : MonoBehaviour
 
     void Start()
     {
-        currentZombiesPerWave = initialZombiesPerWave;
-
+        GlobalReferences.Instance.waveNumber = currentWave;
         StartNextWave();
     }
 
@@ -36,6 +36,21 @@ public class ZombieSpawnController : MonoBehaviour
     {
         currentZombiesAlive.Clear();
         currentWave++;
+        GlobalReferences.Instance.waveNumber = currentWave;
+
+        // Stop spawning after wave 5
+        if (currentWave > 5)
+        {
+            Debug.Log("All waves completed! No more zombies will spawn.");
+            currentWaveUI.text = "All Waves Complete!";
+            return;
+        }
+
+        // Calculate zombies per wave: 2, 4, 8, 16, 32 (waves 1-5)
+        currentZombiesPerWave = initialZombiesPerWave * (int)Mathf.Pow(2, currentWave - 1);
+
+        Debug.Log($"Wave {currentWave}: Spawning {currentZombiesPerWave} zombies (initialZombiesPerWave = {initialZombiesPerWave})");
+
         currentWaveUI.text = "Wave: " + currentWave.ToString();
         StartCoroutine(SpawnWave());
     }
@@ -64,6 +79,12 @@ public class ZombieSpawnController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Skip all updates if game is completed
+        if (gameCompleted)
+        {
+            return;
+        }
+
         // Get all dead zombies
         List<Enemy> zombiesToRemove = new List<Enemy>();
         foreach (Enemy zombie in currentZombiesAlive)
@@ -105,14 +126,51 @@ public class ZombieSpawnController : MonoBehaviour
     private IEnumerator WaveCooldown()
     {
         inCooldown = true;
+
+        // Check if we just completed wave 5
+        if (currentWave >= 5)
+        {
+            gameCompleted = true;
+            waveOverUI.text = "All Waves Complete! You Win!";
+            waveOverUI.gameObject.SetActive(true);
+
+            // Hide the cooldown counter UI when game is completed
+            cooldownCounterUI.text = "";
+
+            // Clean up dead zombies after a short delay
+            yield return new WaitForSeconds(5.0f);
+            CleanupDeadZombies();
+
+            Debug.Log("Game completed! All 5 waves finished.");
+            // Don't start next wave, game is complete
+            yield break;
+        }
+
         waveOverUI.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(waveCooldown);
+        // Clean up dead zombies after a short delay to let death animations play
+        yield return new WaitForSeconds(5.0f);
+        CleanupDeadZombies();
+
+        // Continue with the rest of the cooldown
+        yield return new WaitForSeconds(waveCooldown - 5.0f);
 
         inCooldown = false;
         waveOverUI.gameObject.SetActive(false);
 
-        currentZombiesPerWave *= 2; // 5*2=10 10*2=20
         StartNextWave();
+    }
+
+    private void CleanupDeadZombies()
+    {
+        // Find all dead zombies in the scene and destroy them
+        Enemy[] allEnemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        foreach (Enemy enemy in allEnemies)
+        {
+            if (enemy.isDead)
+            {
+                enemy.DestroyZombie();
+            }
+        }
     }
 }
